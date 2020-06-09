@@ -14,8 +14,116 @@ export class TableService {
   constructor(private httpClient: HttpClient) {}
 
   public getVideos(): Observable<YoutubeItem[]> {
-    return this.httpClient
-      .get<YoutubeResponse>(environment.youtubeSearchUrl)
-      .pipe(map((youtubeResponse: YoutubeResponse) => youtubeResponse.items));
+    //! you tube api key suddenly stopped working, it is just a placeholder, ucomment part below, when you will set it up
+    return of([
+      {
+        etag: 'etag',
+        kind: 'king',
+
+        snippet: {
+          channelId: 'string',
+          channelTitle: 'string',
+          description: 'string',
+          liveBroadcastContent: 'string',
+          publishTime: 'string',
+          publishedAt: 'string',
+          thumbnails: {
+            default: {
+              url: 'string',
+              width: 0,
+              height: 0,
+            },
+            high: {
+              url: 'string',
+              width: 0,
+              height: 0,
+            },
+            medium: {
+              url: 'string',
+              width: 0,
+              height: 0,
+            },
+          },
+          title: 'string',
+        },
+        id: {
+          kind: 'string',
+          videoId: 'string',
+        },
+      },
+      {
+        etag: 'etag',
+        kind: 'king',
+
+        snippet: {
+          channelId: 'string',
+          channelTitle: 'string',
+          description: 'string',
+          liveBroadcastContent: 'string',
+          publishTime: 'string',
+          publishedAt: 'string',
+          thumbnails: {
+            default: {
+              url: 'string',
+              width: 0,
+              height: 0,
+            },
+            high: {
+              url: 'string',
+              width: 0,
+              height: 0,
+            },
+            medium: {
+              url: 'string',
+              width: 0,
+              height: 0,
+            },
+          },
+          title: 'string',
+        },
+        id: {
+          kind: 'string',
+          videoId: 'string',
+        },
+      },
+      {
+        etag: 'etag',
+        kind: 'king',
+
+        snippet: {
+          channelId: 'string',
+          channelTitle: 'string',
+          description: 'string',
+          liveBroadcastContent: 'string',
+          publishTime: 'string',
+          publishedAt: 'string',
+          thumbnails: {
+            default: {
+              url: 'string',
+              width: 0,
+              height: 0,
+            },
+            high: {
+              url: 'string',
+              width: 0,
+              height: 0,
+            },
+            medium: {
+              url: 'string',
+              width: 0,
+              height: 0,
+            },
+          },
+          title: 'string',
+        },
+        id: {
+          kind: 'string',
+          videoId: 'string',
+        },
+      },
+    ]);
+    // return this.httpClient
+    //   .get<YoutubeResponse>(environment.youtubeSearchUrl)
+    //   .pipe(map((youtubeResponse: YoutubeResponse) => youtubeResponse.items));
   }
 }
