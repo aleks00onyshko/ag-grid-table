@@ -1,0 +1,7 @@
+<input
+  type="checkbox"
+  name="select-all"
+  id="select-all"
+  [checked]="tableFacade.allSelected$ | async"
+  (click)="toggleOverallSelection()"
+/>

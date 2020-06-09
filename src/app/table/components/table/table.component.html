@@ -1,0 +1,22 @@
+<div class="grid-wrapper">
+  <div class="toolbar">
+    <button (click)="toggleSelectionMode()">Toggle Selection</button>
+
+    <span>Total count {{ (rowData$ | async).length }}</span>
+    <span>Selected count: {{ tableFacade.selectionCount$ | async }} </span>
+  </div>
+
+  <ag-grid-angular
+    #agGrid
+    class="ag-theme-alpine"
+    style="height: 100%; width: 100%;"
+    rowSelection="multiple"
+    [rowData]="rowData$ | async"
+    [columnDefs]="columnDefs"
+    [modules]="modules"
+    [getContextMenuItems]="getContextMenuItems"
+    [rowHeight]="80"
+    [suppressContextMenu]="false"
+    (selectionChanged)="onSelectionChanged()"
+  ></ag-grid-angular>
+</div>
