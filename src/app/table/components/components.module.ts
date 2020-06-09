@@ -8,15 +8,16 @@ import { TableCoreModule } from '../core';
 
 import { TableComponent } from './table';
 import { HeaderSelectComponent } from './header-select';
+import { ToolbarComponent } from './toolbar';
 
-const COMPONENTS = [TableComponent, HeaderSelectComponent];
+const COMPONENTS = [TableComponent, HeaderSelectComponent, ToolbarComponent];
 
 @NgModule({
   declarations: [...COMPONENTS],
   imports: [
     CommonModule,
     TableCoreModule,
-    AgGridModule.withComponents([HeaderSelectComponent]),
+    AgGridModule.withComponents([HeaderSelectComponent, ToolbarComponent]),
   ],
   exports: [...COMPONENTS],
 })

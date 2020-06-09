@@ -24,7 +24,7 @@ import {
   SELECTION_CHANGED,
   ToggleOverallDeselection,
 } from '../actions';
-import { getSelectionMode, getVideos } from 'src/app/table/store/selectors';
+import { getVideos } from '../selectors';
 
 @Injectable({
   providedIn: 'root',

@@ -1,0 +1,11 @@
+<div class="toolbar">
+  <div class="toolbar-item">
+    <button (click)="toggleSelectionMode()">Toggle Selection</button>
+  </div>
+  <div class="toolbar-item">
+    <span>Total count {{ (tableFacade.videos$ | async).length }}</span>
+  </div>
+  <div class="toolbar-item">
+    <span>Selected count: {{ tableFacade.selectionCount$ | async }} </span>
+  </div>
+</div>

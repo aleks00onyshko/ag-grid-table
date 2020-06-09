@@ -12,6 +12,7 @@ import { map } from 'rxjs/operators';
 import { Thumbnail, YoutubeItem } from '../../models';
 import { TableFacade } from '../../store';
 import { HeaderSelectComponent } from '../header-select';
+import { ToolbarComponent } from '../toolbar';
 
 interface RowData {
   thumbnail: Thumbnail;
@@ -33,6 +34,10 @@ export class TableComponent implements OnDestroy, AfterViewInit {
 
   rowData$: Observable<RowData[]> = this.createRowData();
   columnDefs: ColDef[] = this.createColumnDefs(false);
+  sideBar = this.createSideBar();
+  frameworkComponents = {
+    customStatsToolPanel: ToolbarComponent,
+  };
   modules = AllModules;
 
   private selectionModeSubscription$: Subscription;
@@ -71,10 +76,6 @@ export class TableComponent implements OnDestroy, AfterViewInit {
     const rows = this.agGrid.api.getSelectedRows();
 
     this.tableFacade.selectionChanged(rows.length);
-  }
-
-  toggleSelectionMode(): void {
-    this.tableFacade.toggleSelectionMode();
   }
 
   getContextMenuItems(params: GetContextMenuItemsParams) {
@@ -139,6 +140,21 @@ export class TableComponent implements OnDestroy, AfterViewInit {
         }))
       )
     );
+  }
+
+  private createSideBar() {
+    return {
+      toolPanels: [
+        {
+          id: 'customStats',
+          labelDefault: 'Custom Stats',
+          labelKey: 'customStats',
+          iconKey: 'custom-stats',
+          toolPanel: 'customStatsToolPanel',
+        },
+      ],
+      defaultToolPanel: 'customStats',
+    };
   }
 
   private thumbnailCellRenderer(rowParams: ICellRendererParams): string {
