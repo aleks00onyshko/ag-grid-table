@@ -3,9 +3,10 @@ import {
   ColDef,
   ICellRendererParams,
   GetContextMenuItemsParams,
+  SideBarDef,
 } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular';
-import { AllModules } from '@ag-grid-enterprise/all-modules';
+import { AllModules, Module } from '@ag-grid-enterprise/all-modules';
 import { Observable, Subscription, combineLatest } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -34,11 +35,11 @@ export class TableComponent implements OnDestroy, AfterViewInit {
 
   rowData$: Observable<RowData[]> = this.createRowData();
   columnDefs: ColDef[] = this.createColumnDefs(false);
-  sideBar = this.createSideBar();
+  sideBar: SideBarDef = this.createSideBar();
+  modules: Module[] = AllModules;
   frameworkComponents = {
     customStatsToolPanel: ToolbarComponent,
   };
-  modules = AllModules;
 
   private selectionModeSubscription$: Subscription;
   private selectionState$: Subscription;
@@ -79,8 +80,6 @@ export class TableComponent implements OnDestroy, AfterViewInit {
   }
 
   getContextMenuItems(params: GetContextMenuItemsParams) {
-    console.log('from custom', params);
-
     return params.column.getColDef().headerName === 'Video Title'
       ? [
           'copy',
@@ -142,7 +141,7 @@ export class TableComponent implements OnDestroy, AfterViewInit {
     );
   }
 
-  private createSideBar() {
+  private createSideBar(): SideBarDef {
     return {
       toolPanels: [
         {
