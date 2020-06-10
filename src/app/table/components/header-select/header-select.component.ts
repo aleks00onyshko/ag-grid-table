@@ -14,6 +14,5 @@ export class HeaderSelectComponent implements IHeaderAngularComp {
 
   toggleOverallSelection(): void {
     this.tableFacade.toggleOverallSelection();
-    this.tableFacade.toggleOverallDeselection();
   }
 }

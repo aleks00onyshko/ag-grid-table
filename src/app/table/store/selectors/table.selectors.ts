@@ -23,8 +23,3 @@ export const getAllSelected = createSelector(
   getTableState,
   (state: TableState) => state.allSelected
 );
-
-export const getAllUnselected = createSelector(
-  getTableState,
-  (state: TableState) => state.allUnselected
-);

@@ -11,6 +11,7 @@
     [frameworkComponents]="frameworkComponents"
     [getContextMenuItems]="getContextMenuItems"
     [rowHeight]="80"
+    (gridReady)="onGridReady()"
     [suppressContextMenu]="false"
     (selectionChanged)="onSelectionChanged()"
   ></ag-grid-angular>

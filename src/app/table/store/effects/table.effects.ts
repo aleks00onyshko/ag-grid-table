@@ -15,16 +15,14 @@ import { TableService } from '../../core/services';
 import { YoutubeItem, TableState } from '../../models';
 
 import {
-  GET_VIDEOS,
-  GetVideosSuccess,
-  GetVideosFail,
-  SELECTION_MODE_CHANGED,
-  SelectionChanged,
-  ToggleOverallSelection,
-  SELECTION_CHANGED,
-  ToggleOverallDeselection,
+  getVideos,
+  getVideosFail,
+  getVideosSuccess,
+  selectionChanged,
+  toggleOverallSelection,
+  toggleSelectionMode,
 } from '../actions';
-import { getVideos } from '../selectors';
+import { getVideos as getVideosSelector } from '../selectors';
 
 @Injectable({
   providedIn: 'root',
@@ -32,11 +30,11 @@ import { getVideos } from '../selectors';
 export class TableEffects {
   getVideos$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(GET_VIDEOS),
+      ofType(getVideos),
       mergeMap(() =>
         this.tableService.getVideos().pipe(
-          map((videos: YoutubeItem[]) => new GetVideosSuccess(videos)),
-          catchError((error: any) => of(new GetVideosFail(error)))
+          map((videos: YoutubeItem[]) => getVideosSuccess({ videos })),
+          catchError((error: any) => of(getVideosFail({ error })))
         )
       )
     )
@@ -44,24 +42,26 @@ export class TableEffects {
 
   selectionChanged$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(SELECTION_CHANGED),
-      concatMap((action: SelectionChanged) =>
-        of(action).pipe(withLatestFrom(this.store.pipe(select(getVideos))))
+      ofType(selectionChanged),
+      concatMap((action) =>
+        of(action).pipe(
+          withLatestFrom(this.store.pipe(select(getVideosSelector)))
+        )
       ),
       concatMap(([action, videos]) => [
-        new ToggleOverallSelection(action.payload === videos.length),
-        new ToggleOverallDeselection(action.payload === 0),
+        toggleOverallSelection({
+          allSelected: action.selectionCount === videos.length,
+        }),
       ])
     )
   );
 
-  selectionModeChanged$ = createEffect(() =>
+  selectionModeToggled$ = createEffect(() =>
     this.actions$.pipe(
-      ofType(SELECTION_MODE_CHANGED),
+      ofType(toggleSelectionMode),
       concatMapTo([
-        new SelectionChanged(0),
-        new ToggleOverallSelection(false),
-        new ToggleOverallDeselection(true),
+        selectionChanged({ selectionCount: 0 }),
+        toggleOverallSelection({ allSelected: false }),
       ])
     )
   );

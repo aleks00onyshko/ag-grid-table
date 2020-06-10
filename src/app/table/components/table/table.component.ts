@@ -7,13 +7,14 @@ import {
 } from 'ag-grid-community';
 import { AgGridAngular } from 'ag-grid-angular';
 import { AllModules, Module } from '@ag-grid-enterprise/all-modules';
-import { Observable, Subscription, combineLatest } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { Observable, Subscription, of } from 'rxjs';
+import { map, concatMap, withLatestFrom } from 'rxjs/operators';
 
 import { Thumbnail, YoutubeItem } from '../../models';
 import { TableFacade } from '../../store';
 import { HeaderSelectComponent } from '../header-select';
 import { ToolbarComponent } from '../toolbar';
+import { ContextParams } from 'ag-grid-community/dist/lib/context/context';
 
 interface RowData {
   thumbnail: Thumbnail;
@@ -30,7 +31,7 @@ interface RowData {
   templateUrl: './table.component.html',
   styleUrls: ['./table.component.scss'],
 })
-export class TableComponent implements OnDestroy, AfterViewInit {
+export class TableComponent implements OnDestroy {
   @ViewChild('agGrid') agGrid: AgGridAngular;
 
   rowData$: Observable<RowData[]> = this.createRowData();
@@ -46,9 +47,12 @@ export class TableComponent implements OnDestroy, AfterViewInit {
 
   constructor(public tableFacade: TableFacade) {}
 
-  ngAfterViewInit() {
-    // *I put subscription to this hook because I need to get access to agGrid
+  ngOnDestroy() {
+    this.selectionModeSubscription$.unsubscribe();
+    this.selectionState$.unsubscribe();
+  }
 
+  onGridReady(): void {
     this.selectionModeSubscription$ = this.tableFacade.selectionMode$.subscribe(
       (selectionMode: boolean) => {
         this.agGrid.api.setColumnDefs(this.createColumnDefs(selectionMode));
@@ -56,21 +60,22 @@ export class TableComponent implements OnDestroy, AfterViewInit {
       }
     );
 
-    this.selectionState$ = combineLatest(
-      this.tableFacade.allSelected$,
-      this.tableFacade.allUnselected$
-    ).subscribe(([allSelected, allUnselected]) => {
-      allSelected
-        ? this.agGrid.api.selectAll()
-        : allUnselected
-        ? this.agGrid.api.deselectAll()
-        : null;
-    });
-  }
-
-  ngOnDestroy() {
-    this.selectionModeSubscription$.unsubscribe();
-    this.selectionState$.unsubscribe();
+    this.selectionState$ = this.tableFacade.allSelected$
+      .pipe(
+        concatMap((allSelected: boolean) =>
+          of(allSelected).pipe(
+            withLatestFrom(
+              this.tableFacade.selectionCount$,
+              this.tableFacade.videos$
+            )
+          )
+        )
+      )
+      .subscribe(([allSelected, selectionCount, videos]) => {
+        allSelected
+          ? this.agGrid.api.selectAll()
+          : selectionCount === videos.length && this.agGrid.api.deselectAll();
+      });
   }
 
   onSelectionChanged(): void {
@@ -79,7 +84,7 @@ export class TableComponent implements OnDestroy, AfterViewInit {
     this.tableFacade.selectionChanged(rows.length);
   }
 
-  getContextMenuItems(params: GetContextMenuItemsParams) {
+  getContextMenuItems(params: GetContextMenuItemsParams): any[] {
     return params.column.getColDef().headerName === 'Video Title'
       ? [
           'copy',
@@ -101,8 +106,8 @@ export class TableComponent implements OnDestroy, AfterViewInit {
   private createColumnDefs(selectionMode: boolean): ColDef[] {
     return [
       {
-        field: 'thumbnail',
         headerName: '',
+        field: 'thumbnail',
         headerComponentFramework: selectionMode ? HeaderSelectComponent : null,
         cellRenderer: this.thumbnailCellRenderer,
         suppressSizeToFit: true,

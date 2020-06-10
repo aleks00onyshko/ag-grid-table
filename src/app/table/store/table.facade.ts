@@ -5,49 +5,42 @@ import { Observable } from 'rxjs';
 import { TableState, YoutubeItem } from '../models';
 
 import {
-  getVideos,
+  getVideos as getVideosSelector,
   getSelectionCount,
   getSelectionMode,
   getAllSelected,
-  getAllUnselected,
 } from './selectors';
 import {
-  GetVideos,
-  SelectionChanged,
-  SelectionModeChanged,
-  ToggleOverallSelection,
-  ToggleOverallDeselection,
+  getVideos,
+  selectionChanged,
+  toggleSelectionMode,
+  toggleOverallSelection,
 } from './actions';
 
 @Injectable({
   providedIn: 'root',
 })
 export class TableFacade {
-  videos$: Observable<YoutubeItem[]> = this.store.select(getVideos);
+  videos$: Observable<YoutubeItem[]> = this.store.select(getVideosSelector);
   selectionCount$: Observable<number> = this.store.select(getSelectionCount);
   selectionMode$: Observable<boolean> = this.store.select(getSelectionMode);
   allSelected$: Observable<boolean> = this.store.select(getAllSelected);
-  allUnselected$: Observable<boolean> = this.store.select(getAllUnselected);
 
   constructor(private store: Store<TableState>) {}
 
   getVideos(): void {
-    this.store.dispatch(new GetVideos());
+    this.store.dispatch(getVideos());
   }
 
   selectionChanged(count: number): void {
-    this.store.dispatch(new SelectionChanged(count));
+    this.store.dispatch(selectionChanged({ selectionCount: count }));
   }
 
   toggleSelectionMode(): void {
-    this.store.dispatch(new SelectionModeChanged());
+    this.store.dispatch(toggleSelectionMode({}));
   }
 
   toggleOverallSelection(): void {
-    this.store.dispatch(new ToggleOverallSelection());
-  }
-
-  toggleOverallDeselection(): void {
-    this.store.dispatch(new ToggleOverallDeselection());
+    this.store.dispatch(toggleOverallSelection({}));
   }
 }

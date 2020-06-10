@@ -5,6 +5,5 @@ export interface TableState {
   selectionCount: number;
   selectionMode: boolean;
   allSelected: boolean;
-  allUnselected: boolean;
   error: any;
 }
