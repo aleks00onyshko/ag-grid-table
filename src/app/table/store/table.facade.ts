@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { TableState, YoutubeItem } from '../models';
 
 import {
-  getVideos as getVideosSelector,
+  getVideosSelector,
   getSelectionCount,
   getSelectionMode,
   getAllSelected,

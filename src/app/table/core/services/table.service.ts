@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { map } from 'rxjs/operators';
+import { map, catchError } from 'rxjs/operators';
 
 import { Observable, of } from 'rxjs';
 
@@ -15,115 +15,118 @@ export class TableService {
 
   public getVideos(): Observable<YoutubeItem[]> {
     //! you tube api key suddenly stopped working, it is just a placeholder, ucomment part below, when you will set it up
-    return of([
-      {
-        etag: 'etag',
-        kind: 'king',
+    // return of([
+    //   {
+    //     etag: 'etag',
+    //     kind: 'king',
 
-        snippet: {
-          channelId: 'string',
-          channelTitle: 'string',
-          description: 'string',
-          liveBroadcastContent: 'string',
-          publishTime: 'string',
-          publishedAt: 'string',
-          thumbnails: {
-            default: {
-              url: 'string',
-              width: 0,
-              height: 0,
-            },
-            high: {
-              url: 'string',
-              width: 0,
-              height: 0,
-            },
-            medium: {
-              url: 'string',
-              width: 0,
-              height: 0,
-            },
-          },
-          title: 'string',
-        },
-        id: {
-          kind: 'string',
-          videoId: 'string',
-        },
-      },
-      {
-        etag: 'etag',
-        kind: 'king',
+    //     snippet: {
+    //       channelId: 'string',
+    //       channelTitle: 'string',
+    //       description: 'string',
+    //       liveBroadcastContent: 'string',
+    //       publishTime: 'string',
+    //       publishedAt: 'string',
+    //       thumbnails: {
+    //         default: {
+    //           url: 'string',
+    //           width: 0,
+    //           height: 0,
+    //         },
+    //         high: {
+    //           url: 'string',
+    //           width: 0,
+    //           height: 0,
+    //         },
+    //         medium: {
+    //           url: 'string',
+    //           width: 0,
+    //           height: 0,
+    //         },
+    //       },
+    //       title: 'string',
+    //     },
+    //     id: {
+    //       kind: 'string',
+    //       videoId: 'string',
+    //     },
+    //   },
+    //   {
+    //     etag: 'etag',
+    //     kind: 'king',
 
-        snippet: {
-          channelId: 'string',
-          channelTitle: 'string',
-          description: 'string',
-          liveBroadcastContent: 'string',
-          publishTime: 'string',
-          publishedAt: 'string',
-          thumbnails: {
-            default: {
-              url: 'string',
-              width: 0,
-              height: 0,
-            },
-            high: {
-              url: 'string',
-              width: 0,
-              height: 0,
-            },
-            medium: {
-              url: 'string',
-              width: 0,
-              height: 0,
-            },
-          },
-          title: 'string',
-        },
-        id: {
-          kind: 'string',
-          videoId: 'string',
-        },
-      },
-      {
-        etag: 'etag',
-        kind: 'king',
+    //     snippet: {
+    //       channelId: 'string',
+    //       channelTitle: 'string',
+    //       description: 'string',
+    //       liveBroadcastContent: 'string',
+    //       publishTime: 'string',
+    //       publishedAt: 'string',
+    //       thumbnails: {
+    //         default: {
+    //           url: 'string',
+    //           width: 0,
+    //           height: 0,
+    //         },
+    //         high: {
+    //           url: 'string',
+    //           width: 0,
+    //           height: 0,
+    //         },
+    //         medium: {
+    //           url: 'string',
+    //           width: 0,
+    //           height: 0,
+    //         },
+    //       },
+    //       title: 'string',
+    //     },
+    //     id: {
+    //       kind: 'string',
+    //       videoId: 'string',
+    //     },
+    //   },
+    //   {
+    //     etag: 'etag',
+    //     kind: 'king',
 
-        snippet: {
-          channelId: 'string',
-          channelTitle: 'string',
-          description: 'string',
-          liveBroadcastContent: 'string',
-          publishTime: 'string',
-          publishedAt: 'string',
-          thumbnails: {
-            default: {
-              url: 'string',
-              width: 0,
-              height: 0,
-            },
-            high: {
-              url: 'string',
-              width: 0,
-              height: 0,
-            },
-            medium: {
-              url: 'string',
-              width: 0,
-              height: 0,
-            },
-          },
-          title: 'string',
-        },
-        id: {
-          kind: 'string',
-          videoId: 'string',
-        },
-      },
-    ]);
-    // return this.httpClient
-    //   .get<YoutubeResponse>(environment.youtubeSearchUrl)
-    //   .pipe(map((youtubeResponse: YoutubeResponse) => youtubeResponse.items));
+    //     snippet: {
+    //       channelId: 'string',
+    //       channelTitle: 'string',
+    //       description: 'string',
+    //       liveBroadcastContent: 'string',
+    //       publishTime: 'string',
+    //       publishedAt: 'string',
+    //       thumbnails: {
+    //         default: {
+    //           url: 'string',
+    //           width: 0,
+    //           height: 0,
+    //         },
+    //         high: {
+    //           url: 'string',
+    //           width: 0,
+    //           height: 0,
+    //         },
+    //         medium: {
+    //           url: 'string',
+    //           width: 0,
+    //           height: 0,
+    //         },
+    //       },
+    //       title: 'string',
+    //     },
+    //     id: {
+    //       kind: 'string',
+    //       videoId: 'string',
+    //     },
+    //   },
+    // ]);
+    return this.httpClient
+      .get<YoutubeResponse>(environment.youtubeSearchUrl)
+      .pipe(
+        map((youtubeResponse: YoutubeResponse) => youtubeResponse.items),
+        catchError((err) => of(err))
+      );
   }
 }

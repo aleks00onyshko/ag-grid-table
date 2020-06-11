@@ -16,7 +16,6 @@ const COMPONENTS = [TableComponent, HeaderSelectComponent, ToolbarComponent];
   declarations: [...COMPONENTS],
   imports: [
     CommonModule,
-    TableCoreModule,
     AgGridModule.withComponents([HeaderSelectComponent, ToolbarComponent]),
   ],
   exports: [...COMPONENTS],

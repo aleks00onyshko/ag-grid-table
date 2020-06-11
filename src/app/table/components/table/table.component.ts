@@ -45,7 +45,7 @@ export class TableComponent implements OnDestroy {
   private selectionModeSubscription$: Subscription;
   private selectionState$: Subscription;
 
-  constructor(public tableFacade: TableFacade) {}
+  constructor(private tableFacade: TableFacade) {}
 
   ngOnDestroy() {
     this.selectionModeSubscription$.unsubscribe();
@@ -80,26 +80,19 @@ export class TableComponent implements OnDestroy {
 
   onSelectionChanged(): void {
     const rows = this.agGrid.api.getSelectedRows();
-
     this.tableFacade.selectionChanged(rows.length);
   }
 
   getContextMenuItems(params: GetContextMenuItemsParams): any[] {
+    const openInNewTabDef = {
+      name: 'Open in new tab',
+      action: function () {
+        window.open(`https://www.youtube.com/watch?v=${params.value.videoId}`);
+      },
+    };
+
     return params.column.getColDef().headerName === 'Video Title'
-      ? [
-          'copy',
-          'copyWithHeaders',
-          'paste',
-          'export',
-          {
-            name: 'Open in new tab',
-            action: function () {
-              window.open(
-                `https://www.youtube.com/watch?v=${params.value.videoId}`
-              );
-            },
-          },
-        ]
+      ? ['copy', 'copyWithHeaders', 'paste', 'export', openInNewTabDef]
       : ['copy', 'copyWithHeaders', 'paste', 'export'];
   }
 
@@ -161,7 +154,7 @@ export class TableComponent implements OnDestroy {
     };
   }
 
-  private thumbnailCellRenderer(rowParams: ICellRendererParams): string {
+  public thumbnailCellRenderer(rowParams: ICellRendererParams): string {
     return `<img src=${rowParams.value.url} >`;
   }
 

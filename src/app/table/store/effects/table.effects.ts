@@ -22,7 +22,7 @@ import {
   toggleOverallSelection,
   toggleSelectionMode,
 } from '../actions';
-import { getVideos as getVideosSelector } from '../selectors';
+import { getVideosSelector } from '../selectors';
 
 @Injectable({
   providedIn: 'root',
@@ -65,6 +65,7 @@ export class TableEffects {
       ])
     )
   );
+
   constructor(
     private actions$: Actions,
     private store: Store<TableState>,

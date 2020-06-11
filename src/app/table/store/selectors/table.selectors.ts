@@ -4,7 +4,7 @@ import { TableState } from '../../models';
 
 const getTableState = createFeatureSelector<TableState>('table');
 
-export const getVideos = createSelector(
+export const getVideosSelector = createSelector(
   getTableState,
   (state: TableState) => state.videos
 );

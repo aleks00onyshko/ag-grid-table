@@ -1,3 +1,5 @@
+import { createReducer, on } from '@ngrx/store';
+
 import { TableState } from '../../models';
 import {
   getVideosSuccess,
@@ -6,7 +8,6 @@ import {
   toggleSelectionMode,
   toggleOverallSelection,
 } from '../actions';
-import { createReducer, on } from '@ngrx/store';
 
 export const initialState: TableState = {
   videos: [],
