@@ -1,14 +1,36 @@
-import { getTestBed, TestBed, async } from '@angular/core/testing';
+import { ReplaySubject } from 'rxjs';
+import { TestBed, async } from '@angular/core/testing';
+import { provideMockActions } from '@ngrx/effects/testing';
+import { provideMockStore, MockStore } from '@ngrx/store/testing';
+
+import { TableEffects } from './table.effects';
+import { initialState } from '../reducers';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TableService } from '../../core';
+
 import {
-  HttpClientTestingModule,
-  HttpTestingController,
-} from '@angular/common/http/testing';
+  getVideos,
+  selectionChanged,
+  getVideosSuccess,
+  toggleSelectionMode,
+} from '../actions';
+import { Store } from '@ngrx/store';
+import { TableState } from '../../models';
+import { getVideosSelector } from 'src/app/table/store/selectors';
+import { take, skip } from 'rxjs/operators';
 
-import { TableService } from './table.service';
+interface TestSchema {
+  table: TableState;
+}
 
-describe('TableService', () => {
+describe('RouterHistoryEffects', () => {
+  let actions: ReplaySubject<any>;
+  let tableEffects: TableEffects;
+  let store: MockStore<TableState>;
   let tableService: TableService;
-  let httpMock: HttpTestingController;
+
+  let mockedGetVideosSelector;
+
   let mocks = {
     videos: [
       {
@@ -122,21 +144,58 @@ describe('TableService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
       imports: [HttpClientTestingModule],
-      providers: [TableService],
+      providers: [
+        TableEffects,
+        TableService,
+        provideMockStore({ initialState }),
+        provideMockActions(() => actions),
+      ],
     });
 
+    tableEffects = TestBed.inject(TableEffects);
     tableService = TestBed.inject(TableService);
-    httpMock = TestBed.inject(HttpTestingController);
+    store = TestBed.get(Store);
+
+    mockedGetVideosSelector = store.overrideSelector(
+      getVideosSelector,
+      mocks.videos
+    );
   });
 
-  it('should initialize TableService', () => {
-    expect(tableService).toBeTruthy();
+  it('should be created', async () => {
+    expect(tableEffects).toBeTruthy();
   });
 
-  it('#getVideos should return appropriate result', async(async () => {
-    tableService.getVideos().subscribe((items) => {
-      expect(items.length).toBe(3);
-      expect(items).toEqual(mocks.videos);
+  it('#getVideos$ should dispatch getVideosSuccess with a videos payload', async(async () => {
+    actions = new ReplaySubject(1);
+    actions.next(getVideos());
+
+    tableEffects.getVideos$.subscribe((action) => {
+      expect((action as any).videos).toEqual({ videos: mocks.videos });
+    });
+  }));
+
+  it('#selectionChanged$ should dispatch toggleOverallSelection with overall selected state', async(async () => {
+    actions = new ReplaySubject(1);
+    actions.next(selectionChanged({ selectionCount: 2 }));
+
+    tableEffects.selectionChanged$.subscribe((action) => {
+      expect((action as any).allSelected).toBeFalsy();
+    });
+  }));
+
+  it('#selectionModeToggled$ should dispatch selectionChanged and toggleOverallSelection', async(async () => {
+    actions = new ReplaySubject(1);
+    actions.next(toggleSelectionMode({ selectionMode: true }));
+
+    tableEffects.selectionModeToggled$.pipe(take(1)).subscribe((action) => {
+      console.log('from first last effect', action);
+      expect((action as any).selectionCount).toEqual(0);
+    });
+
+    tableEffects.selectionModeToggled$.pipe(skip(1)).subscribe((action) => {
+      console.log('from second last effect', action);
+      expect((action as any).allSelected).toBeFalsy();
     });
   }));
 });

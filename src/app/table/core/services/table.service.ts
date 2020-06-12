@@ -124,9 +124,6 @@ export class TableService {
     // ]);
     return this.httpClient
       .get<YoutubeResponse>(environment.youtubeSearchUrl)
-      .pipe(
-        map((youtubeResponse: YoutubeResponse) => youtubeResponse.items),
-        catchError((err) => of(err))
-      );
+      .pipe(map((youtubeResponse: YoutubeResponse) => youtubeResponse.items));
   }
 }
