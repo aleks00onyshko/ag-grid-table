@@ -9,7 +9,7 @@ export const getVideosSuccess = createAction(
 );
 export const getVideosFail = createAction(
   '[Table] Get Videos Fail',
-  props<{ error: any }>()
+  props<{ error: any; videosMock: YoutubeItem[] }>()
 );
 export const selectionChanged = createAction(
   '[Table] Selection Changed',

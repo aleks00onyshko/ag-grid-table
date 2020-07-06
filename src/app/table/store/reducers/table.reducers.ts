@@ -20,7 +20,11 @@ export const initialState: TableState = {
 export const tableReducer = createReducer(
   initialState,
   on(getVideosSuccess, (state, { videos }) => ({ ...state, videos })),
-  on(getVideosFail, (state, { error }) => ({ ...state, error })),
+  on(getVideosFail, (state, { error, videosMock }) => ({
+    ...state,
+    error,
+    videos: videosMock,
+  })),
   on(selectionChanged, (state, { selectionCount }) => ({
     ...state,
     selectionCount,

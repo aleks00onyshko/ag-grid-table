@@ -8,6 +8,7 @@ import {
   concatMap,
   concatMapTo,
   withLatestFrom,
+  tap,
 } from 'rxjs/operators';
 import { Store, select } from '@ngrx/store';
 
@@ -34,10 +35,25 @@ export class TableEffects {
       mergeMap(() =>
         this.tableService.getVideos().pipe(
           map((videos: YoutubeItem[]) => getVideosSuccess({ videos })),
-          catchError((error: any) => of(getVideosFail({ error })))
+          catchError((error: any) =>
+            of(
+              getVideosFail({ error, videosMock: this.tableService.videosMock })
+            )
+          )
         )
       )
     )
+  );
+
+  getVideosFail$ = createEffect(
+    () =>
+      this.actions$.pipe(
+        ofType(getVideosFail),
+        tap(() => {
+          alert('google key is expired, videos will be replaced with a mock');
+        })
+      ),
+    { dispatch: false }
   );
 
   selectionChanged$ = createEffect(() =>

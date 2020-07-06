@@ -1,13 +1,10 @@
 import { TestBed } from '@angular/core/testing';
-import { Store, StoreModule } from '@ngrx/store';
-import { NgModule } from '@angular/core';
-import { EffectsModule } from '@ngrx/effects';
+import { Store } from '@ngrx/store';
 import { provideMockStore, MockStore } from '@ngrx/store/testing';
 
 import { TableFacade } from './table.facade';
 import { TableState } from '../models';
-import { TableEffects } from './effects';
-import { tableReducer, initialState } from './reducers';
+import { initialState } from './reducers';
 
 interface TestSchema {
   table: TableState;
